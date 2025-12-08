@@ -4,6 +4,12 @@ FastAPI backend for drone-based tree surveying and health analysis. Integrates Y
 
 ## 🚀 Quick Start
 
+### Prerequisites
+
+- PostgreSQL 15+ running on localhost:5432 (default password: `admin`)
+- Python 3.10+
+- Git
+
 ### Local Development
 
 ```bash
@@ -14,20 +20,13 @@ python -m venv venv
 source venv/bin/activate  # or `venv\Scripts\activate` on Windows
 pip install -r requirements.txt
 
-# Set environment variables
-export DATABASE_URL=postgresql://postgres:postgres@localhost:5432/vaayu_drishti
+# Initialize database (creates tables)
+python init_db.py
 
 # Start server
 python -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
 
 # Visit http://127.0.0.1:8000/docs
-```
-
-### Docker Compose (Recommended)
-
-```bash
-docker-compose up -d
-# Starts PostgreSQL and FastAPI backend
 ```
 
 ## 📁 Project Structure
@@ -165,26 +164,15 @@ black --check .
 
 ## 🐳 Docker
 
-### Build Image
+Docker support has been removed. Use direct Python execution with PostgreSQL.
+
+To run with Docker in the future:
 
 ```bash
 docker build -t vaayu-backend:latest .
-```
-
-### Run Locally
-
-```bash
 docker run -p 8000:8000 \
   -e DATABASE_URL=postgresql://user:pass@host:5432/db \
   vaayu-backend:latest
-```
-
-### Docker Compose (Dev/Staging)
-
-```bash
-docker-compose up -d      # Start with PostgreSQL
-docker-compose logs -f    # View logs
-docker-compose down       # Stop
 ```
 
 ## 🚀 Deployment
@@ -234,19 +222,37 @@ Resources:
 - ✅ Input validation on all endpoints
 - ✅ farmer_id authorization checks
 - ✅ SQLAlchemy ORM (SQL injection prevention)
+- ✅ Rate limiting (60 req/min per IP)
+- ✅ Security headers (XSS, HSTS, frame deny, CSP)
+- ✅ Structured JSON logging for audit trail
+- ✅ CORS enabled for frontend integration
 - 🔲 TODO: JWT authentication
-- 🔲 TODO: Rate limiting
-- 🔲 TODO: CORS restrictions
 - 🔲 TODO: Secrets manager integration
 
 ## 🗄️ Database
 
-PostgreSQL 15+ required.
+**PostgreSQL 15+ required.**
 
-**Connection string format:**
+### Connection Configuration
 
 ```
-postgresql://username:password@hostname:5432/database_name
+Connection: postgresql://postgres:admin@localhost:5432/vaayu_drishti
+```
+
+### Tables
+
+| Table        | Purpose          | Columns                                                                                                           |
+| ------------ | ---------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `farmers`    | Farmer records   | id, name, phone, created_at                                                                                       |
+| `surveys`    | Survey sessions  | id, farmer_id, land_location, total_trees, topview_image_path, extra_data, created_at                             |
+| `trees`      | Individual trees | id, survey_id, tree_number, final_status, final_health_percentage, critical_alert, cx, cy, extra_data, created_at |
+| `tree_parts` | Tree components  | id, tree_id, part_name, health_percentage, top_disease, confidence, status, extra, timestamp                      |
+
+### Initialization
+
+```bash
+# Run this once to create all tables
+python init_db.py
 ```
 
 **Environment variable:**
