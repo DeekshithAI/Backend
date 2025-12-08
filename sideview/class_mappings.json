@@ -1,0 +1,18 @@
+{
+  "part_classes": [
+    "bud",
+    "leaves",
+    "stem"
+  ],
+  "status_classes": [
+    "bud root dropping",
+    "bud rot",
+    "healthy",
+    "Grey leaf rot",
+    "Whitefly",
+    "leaf rot",
+    "stem bleeding"
+  ],
+  "num_parts": 3,
+  "num_status": 7
+}
