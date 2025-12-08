@@ -1,14 +1,17 @@
 fastapi
 uvicorn[standard]
-
-ultralytics==8.3.235
-opencv-python-headless
 python-multipart
 
+# ML Models
+ultralytics==8.3.235
+opencv-python-headless
 numpy<2                    # TensorFlow 2.10 incompatible with NumPy 2.x
 tensorflow==2.10.0         # Works perfectly with Python 3.10 + old .h5 models
 scipy
 pillow
+
+# Chat AI (Sarvam AI)
+openai==1.58.1             # For Sarvam AI integration
 
 # Database packages
 sqlalchemy==2.0.44

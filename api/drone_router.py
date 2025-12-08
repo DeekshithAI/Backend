@@ -39,7 +39,12 @@ def validate_status(status: str) -> str:
 
 def validate_tree_number(tree_number: int) -> int:
     """Validate tree number is positive integer."""
-    if not tree_number or tree_number <= 0:
+    try:
+        tree_number = int(tree_number)
+    except (ValueError, TypeError):
+        raise HTTPException(status_code=400, detail=f"tree_number must be a number, got {tree_number}")
+        
+    if tree_number <= 0:
         raise HTTPException(status_code=400, detail=f"tree_number must be positive integer, got {tree_number}")
     return tree_number
 
@@ -454,6 +459,14 @@ async def mock_sideview_batch(
             # Validation error - add to results but continue
             results.append({
                 "error": ve.detail,
+                "item": item,
+                "tree_number": tree_number
+            })
+            continue
+        except Exception as e:
+            # Catch unexpected errors during processing of a single item
+            results.append({
+                "error": f"Unexpected error: {str(e)}",
                 "item": item,
                 "tree_number": tree_number
             })

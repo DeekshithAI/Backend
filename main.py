@@ -8,6 +8,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from topview.router import router as topview_router
 from sideview.router import router as sideview_router
+from chat.router import router as chat_router
+from expert.router import router as expert_router
 from api.drone_router import router as drone_router
 from api.farmer_router import router as farmer_router
 from api.survey_router import router as survey_router
@@ -90,6 +92,8 @@ async def log_requests(request: Request, call_next):
 # Include routers
 app.include_router(topview_router)
 app.include_router(sideview_router)
+app.include_router(chat_router)
+app.include_router(expert_router)
 app.include_router(drone_router)
 app.include_router(farmer_router)
 app.include_router(survey_router)
