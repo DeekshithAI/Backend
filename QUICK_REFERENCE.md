@@ -35,40 +35,68 @@ Your FastAPI backend with input validation, security, and testing:
 
 ## 🚀 Quick Start Commands
 
+### Prerequisites
+
+- PostgreSQL 15+ running on localhost:5432
+- Python 3.10+
+- Git
+
 ### Local Development
 
 ```powershell
-# 1. Install & test
+# 1. Install dependencies
 py -3.10 -m pip install -r requirements.txt
+
+# 2. Initialize PostgreSQL database
+py -3.10 init_db.py
+
+# 3. Run tests
 pytest tests/ -v
 
-# 2. Start server
+# 4. Start server
 py -3.10 -m uvicorn main:app --reload --host 127.0.0.1 --port 8000
 
-# 3. Check health
+# 5. Check health
 curl http://127.0.0.1:8000/health
 
-# 4. View API docs
+# 6. View API docs
 # Open http://127.0.0.1:8000/docs in browser
 ```
 
 ---
 
-## 📊 Project Structure
+## 📊 Project Structure (Cleaned)
 
-## 📊 Project Structure
+### Root Files
 
-### Core Files
+- `main.py` - FastAPI application entry point
+- `requirements.txt` - Python dependencies (includes psycopg2-binary for PostgreSQL)
+- `init_db.py` - Database initialization script
+- `.env` - Environment variables (PostgreSQL credentials)
+- `.env.example` - Configuration template
 
-| File                               | Type   | Purpose                 |
-| ---------------------------------- | ------ | ----------------------- |
-| `main.py`                          | Python | FastAPI app entry point |
-| `requirements.txt`                 | Config | Python dependencies     |
-| `tests/test_validation_helpers.py` | Python | 21 unit tests           |
-| `schemas/sideview_schemas.py`      | Python | Pydantic models         |
-| `utils/security.py`                | Python | Rate limiting + headers |
-| `.github/workflows/python-ci.yml`  | YAML   | GitHub Actions          |
-| `.env.example`                     | Config | Environment template    |
+### Directories
+
+```
+api/           - API routers (drone, farmer, survey)
+chat/          - Sarvam AI chat integration
+db/            - Database models, CRUD, schemas
+expert/        - Expert consultation router
+schemas/       - Pydantic validation schemas
+sideview/      - TensorFlow model for sideview analysis
+topview/       - YOLO model for topview detection
+tests/         - Unit tests (21 passing tests)
+uploads/       - File uploads directory (.gitkeep)
+utils/         - Security, logging utilities
+.github/       - GitHub Actions CI/CD workflows
+```
+
+**Removed (Cleanup Done):**
+
+- ❌ sarvam_ai/ (duplicate project structure)
+- ❌ **pycache**/ (all cache directories)
+- ❌ .pytest_cache/
+- ❌ coconut_analyzer.db (old SQLite database)
 
 ---
 
@@ -98,17 +126,19 @@ All three endpoints validate inputs and return 400 errors with descriptive messa
 ### 3. Docker Support ✅
 
 ```
-Removed - use direct Python execution instead
+Removed - use direct Python execution with PostgreSQL
 ```
 
-### 4. CI/CD Pipeline ✅
+### 4. Database (PostgreSQL) ✅
 
 ```
-Automated on every push:
-├─ Linting (ruff, black)
-├─ Testing (pytest on Python 3.10, 3.11)
-├─ Docker build & cache
-└─ Auto-deploy to staging (on develop branch)
+Connected to: postgresql://postgres:admin@localhost:5432/vaayu_drishti
+
+Tables:
+├─ farmers (farmer data)
+├─ surveys (survey sessions)
+├─ trees (individual tree records)
+└─ tree_parts (tree part analysis)
 ```
 
 ### 5. Security ✅
@@ -118,7 +148,8 @@ Multiple layers:
 ├─ Rate limiting (60 req/min per IP)
 ├─ Security headers on all responses
 ├─ Input validation everywhere
-└─ Non-root Docker user
+├─ PostgreSQL with secure credentials
+└─ Structured logging for audit trail
 ```
 
 ### 6. Observability ✅
@@ -147,27 +178,36 @@ Production-ready docs:
 
 ## 📋 Quality Checklist
 
-- ✅ All Python files compile successfully
-- ✅ 21 unit tests created and passing
-- ✅ Pydantic models with validation
-- ✅ GitHub Actions workflow configured
-- ✅ Security headers implemented
-- ✅ Rate limiting implemented
-- ✅ Health check endpoint working
-- ✅ Structured logging enabled
-- ✅ .gitignore proper exclusions
-- ✅ .env.example template created
+- ✅ ~~Docker support~~ Removed (using direct Python + PostgreSQL)
+- ✅ PostgreSQL database configured
+- ✅ All cache files removed (**pycache**, .pytest_cache)
+- ✅ Duplicate project structure removed (sarvam_ai/)
+- ✅ Old SQLite database removed
 
 ---
 
-## 🎯 What to Do Next
+## 📝 Environment Configuration
+
+### Setup .env file
+
+```powershell
+# Copy template and edit with your credentials
+cp .env.example .env
+
+# Update with your PostgreSQL password (default: admin)
+SARVAM_API_KEY=sk_shwmrw8z_PyQZ08pQazuoZ7GVdxMVLpLw
+DATABASE_URL=postgresql://postgres:admin@localhost:5432/vaayu_drishti
+```
+
+---
 
 ### Immediate (Today)
 
-1. Run `pytest tests/ -v` to verify tests pass
-2. Start server with `py -3.10 -m uvicorn main:app --reload`
-3. Test health endpoint: `curl http://127.0.0.1:8000/health`
-4. Review API docs at `http://127.0.0.1:8000/docs`
+1. Verify PostgreSQL is running: `sqlplus -h localhost -p 5432`
+2. Run `py -3.10 init_db.py` to initialize database tables
+3. Start server: `py -3.10 -m uvicorn main:app --reload`
+4. Test health: `curl http://127.0.0.1:8000/health`
+5. Review API docs at `http://127.0.0.1:8000/docs`
 
 ### Short Term (This Week)
 
@@ -201,11 +241,14 @@ Production-ready docs:
 
 ## 🎉 Ready to Deploy
 
-Everything is implemented, tested, and ready.
+Everything is implemented, tested, and PostgreSQL-configured.
 
 **Start now:**
 
 ```powershell
+# Initialize database
+py -3.10 init_db.py
+
 # Run tests
 pytest tests/ -v
 
@@ -214,3 +257,9 @@ py -3.10 -m uvicorn main:app --reload
 ```
 
 Visit `http://127.0.0.1:8000/docs` for interactive API documentation.
+
+**PostgreSQL Status:**
+
+- Database: `vaayu_drishti`
+- Tables: farmers, surveys, trees, tree_parts
+- Connection: `postgresql://postgres:admin@localhost:5432/vaayu_drishti`
