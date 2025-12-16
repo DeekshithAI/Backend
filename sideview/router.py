@@ -21,11 +21,59 @@ async def analyze_tree(file: UploadFile = File(...)):
         tmp_path = tmp.name
 
     try:
-        result = model.predict(tmp_path)
+        raw = model.predict(tmp_path)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     finally:
         os.remove(tmp_path)
+
+    # Normalize model output to a richer structure expected by the app
+    part_pred = raw.get('part') or raw.get('part_prediction')
+    status_pred = raw.get('status') or raw.get('status_prediction')
+    part_conf = raw.get('part_confidence') or raw.get('part_conf') or 0.0
+    status_conf = raw.get('status_confidence') or raw.get('status_conf') or 0.0
+
+    # Simple recommendation/fertilizer mapping (can be expanded later)
+    recommendations_map = {
+        'healthy': ["No immediate action needed. Monitor regularly."],
+        'bud rot': ["Remove infected buds and improve drainage.", "Avoid overhead irrigation."],
+        'leaf rot': ["Remove affected leaves and improve air circulation."],
+        'grey leaf rot': ["Apply recommended fungicide and remove debris."],
+        'whitefly': ["Use yellow sticky traps and consider neem oil sprays."],
+        'bud root dropping': ["Inspect roots, improve soil drainage, and avoid waterlogging."],
+        'stem bleeding': ["Prune damaged tissue and apply wound antiseptic."],
+    }
+
+    fertilizers_map = {
+        'healthy': [],
+        'bud rot': ["Balanced NPK fertilizer once infection controlled."],
+        'leaf rot': ["Apply potassium-rich fertilizer to support recovery."],
+        'grey leaf rot': ["Balanced NPK and micronutrients"],
+        'whitefly': ["Use foliar micronutrients to boost plant vigor."],
+        'bud root dropping': ["Organic matter and phosphorus-rich amendment."],
+        'stem bleeding': ["Avoid heavy fertilization until healed."],
+    }
+
+    key = (str(status_pred) or '').lower()
+    # Map by containing keywords for robustness
+    recs = []
+    ferts = []
+    for k, v in recommendations_map.items():
+        if k in key:
+            recs = v
+            break
+    for k, v in fertilizers_map.items():
+        if k in key:
+            ferts = v
+            break
+
+    result = {
+        'part': {'prediction': part_pred, 'confidence': float(part_conf)},
+        'status': {'prediction': status_pred, 'confidence': float(status_conf)},
+        'recommendations': recs,
+        'fertilizers': ferts,
+        'raw': raw,
+    }
 
     return JSONResponse(result)
 

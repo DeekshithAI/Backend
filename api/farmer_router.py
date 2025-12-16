@@ -16,7 +16,12 @@ class FarmerCreate(BaseModel):
 @router.post("/create")
 def create_farmer(data: FarmerCreate, db: Session = Depends(get_db)):
     """Create a new farmer"""
-    farmer = crud.create_farmer(db=db, name=data.name, phone=data.phone)
+    # If phone provided, try to find existing farmer to avoid duplicates
+    farmer = None
+    if data.phone:
+        farmer = crud.get_farmer_by_phone(db, data.phone)
+    if farmer is None:
+        farmer = crud.create_farmer(db=db, name=data.name, phone=data.phone)
     return {
         "id": farmer.id, 
         "name": farmer.name, 
