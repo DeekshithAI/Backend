@@ -1,0 +1,30 @@
+
+
+
+
+# Chat AI (Sarvam AI)
+openai==1.58.1             # For Sarvam AI integration
+
+# Database packages
+sqlalchemy==2.0.44
+psycopg2-binary==2.9.11
+alembic==1.17.2
+python-dotenv==1.2.1
+
+
+
+fastapi>=0.95.0
+uvicorn[standard]>=0.22.0
+tensorflow>=2.10.0
+numpy>=1.23.0
+pillow>=9.0.0
+scipy>=1.8.0
+matplotlib>=3.5.0
+
+
+ultralytics
+opencv-python-headless
+numpy
+scikit-learn
+
+python-multipart

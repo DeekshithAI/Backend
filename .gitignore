@@ -1,0 +1,70 @@
+# Virtual environment
+.venv/
+venv/
+ENV/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Model files (OPTIONAL if too large)
+
+# Model files
+*.h5
+*.pt
+
+# Database files
+*.sqlite3
+
+# Secrets
+secrets.env
+
+# Temp files
+*.tmp
+*.temp
+
+# Jupyter
+.ipynb_checkpoints
+
+# Uploaded files
+uploads/
+
+# VS Code
+.vscode/
+
+# Results
+results/
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# mypy
+.mypy_cache/
+.dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# Coverage
+.coverage
+.coverage.*
+.cache
+htmlcov/
+.tox/
+.nox/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+.pytest_cache/
